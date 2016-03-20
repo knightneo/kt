@@ -31,3 +31,6 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 Route::post('signin', 'AuthController@authenticate');
+Route::group(['middleware' => ['jwt.auth',]], function () {
+    Route::get('profile', 'AuthController@getAuthenticatedUser');
+});
