@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    #return ['OK'];
+    return redirect('/react');
 });
 
 /*
