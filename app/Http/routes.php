@@ -12,8 +12,7 @@
 */
 
 Route::get('/', function () {
-    #return ['OK'];
-    return redirect('/react');
+    return ['OK'];
 });
 
 /*
