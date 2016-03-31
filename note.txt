@@ -1,1 +1,8 @@
 jwt-auth secret [QKHVW7JAlbcQ1em0GOfWAjyJ8jjJyLXP] set successfully.
+
+php artisan migrate --path=database/migrations/
+php artisan db:seed
+
+authentication:
+in header:
+Authorization: Bearer {yourtokenhere}
