@@ -18,6 +18,8 @@ class CreateTableArticle extends Migration
             $table->string('title');
             $table->integer('column_id')->unsigned();
             $table->text('content');
+            $table->tinyInteger('is_published')->default(0);
+            $table->tinyInteger('is_deleted')->default(0);
             $table->integer('created_at')->unsigned();
             $table->integer('updated_at')->unsigned();
         });

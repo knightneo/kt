@@ -25,6 +25,11 @@ Route::get('/', function () {
 | kernel and includes session state, CSRF protection, and more.
 |
 */
+Route::get('test', function () {
+    $token = \Request::header('Authorization');
+    #return \Request::header('Authorization') ? $token : 'no';
+    return \Request::header();
+});
 
 Route::group(['middleware' => ['web']], function () {
     //
@@ -33,7 +38,14 @@ Route::group(['middleware' => ['web']], function () {
 Route::post('signup', function () {
     return ['signup'];
 });
+Route::get('home/article_list/{page}', 'ArticleController@getArticleList');
+Route::get('article/{article_id}', 'ArticleController@getArticleDetail');
 Route::post('signin', 'AuthController@authenticate');
 Route::group(['middleware' => ['jwt.auth',]], function () {
     Route::get('profile', 'AuthController@getAuthenticatedUser');
+    Route::post('article', 'ArticleController@createArticle');
+    Route::put('article/{article_id}', 'ArticleController@updateArticle');
+    Route::get('article/{article_id}/publish', 'ArticleController@publish');
+    Route::get('article/{article_id}/unpublish', 'ArticleController@unpublish');
+    Route::get('article/{article_id}/delete', 'ArticleController@delete');
 });

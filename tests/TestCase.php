@@ -8,6 +8,20 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @var string
      */
     protected $baseUrl = 'http://localhost';
+    
+    public function setUp()
+    {
+        parent::setUp();
+        Config::set('database.default', 'kt_unit_testing');
+        Artisan::call('migrate:reset');
+        Artisan::call('migrate');
+    }
+
+    public function tearDown()
+    {
+        #Artisan::call('migrate:reset');
+        parent::tearDown();
+    }
 
     /**
      * Creates the application.
