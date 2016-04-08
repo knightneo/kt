@@ -114,6 +114,11 @@ class ArticleTest extends TestCase
         $response = json_decode($response->content(), true);
         $this->assertEquals(0, count($response));
 
+        $response = $this->call('GET', 'user/article/1');
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(1, count($response));
+
         $response = $this->call('GET', 'article/' . $article_id);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);

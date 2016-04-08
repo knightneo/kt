@@ -54,6 +54,14 @@ class ArticleController extends Controller
         return $list;
     }
 
+    public function getUserArticleList($page)
+    {
+        $articleDao = new Article;
+        $user = Auth::user();
+        $list = $articleDao->getArticleListByUserIdAndPageSize($user->id, $page);
+        return $list;
+    }
+
     public function getArticleDetail($article_id)
     {
         $articleDao = new Article;
@@ -64,6 +72,11 @@ class ArticleController extends Controller
     public function publish($article_id)
     {
         $articleDao = new Article;
+        $user_id = $articleDao->select('user_id')->where('id', $article_id)->first()['user_id'];
+        $user = Auth::user();
+        if ($user_id != $user->id) {
+            return ['result' => false, 'error_message' => 'wrong user'];
+        }
         $params = ['is_published' => 1];
         $result = $articleDao->updateArticle($article_id, $params);
         return ['result' => $result];
@@ -72,6 +85,11 @@ class ArticleController extends Controller
     public function unpublish($article_id)
     {
         $articleDao = new Article;
+        $user_id = $articleDao->select('user_id')->where('id', $article_id)->first()['user_id'];
+        $user = Auth::user();
+        if ($user_id != $user->id) {
+            return ['result' => false, 'error_message' => 'wrong user'];
+        }
         $params = ['is_published' => 0];
         $result = $articleDao->updateArticle($article_id, $params);
         return ['result' => $result];
@@ -80,6 +98,11 @@ class ArticleController extends Controller
     public function delete($article_id)
     {
         $articleDao = new Article;
+        $user_id = $articleDao->select('user_id')->where('id', $article_id)->first()['user_id'];
+        $user = Auth::user();
+        if ($user_id != $user->id) {
+            return ['result' => false, 'error_message' => 'wrong user'];
+        }
         $params = ['is_deleted' => 1];
         $result = $articleDao->updateArticle($article_id, $params);
         return ['result' => $result];

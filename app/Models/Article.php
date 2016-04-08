@@ -41,6 +41,35 @@ class Article extends BaseModel
             ->with('user')
             ->where('is_deleted', 0)
             ->where('is_published', 1)
+            ->orderBy('created_at', 'desc')
+            ->skip($offset)
+            ->take($size);
+
+        $result = $query->get();
+
+        foreach ($result as &$item) {
+            if (!isset($item['user'])) {
+                unset($item);
+                break;
+            }
+
+            $item['author'] = $item['user']['name'];
+            $item['user_id'] = $item['user']['id'];
+            unset($item['user']);
+        }
+
+        return $result ? $result->toArray() : [];
+    }
+
+    public function getArticleListByUserIdAndPageSize($user_id, $page, $size = 4)
+    {
+        $offset = ($page - 1) * $size;
+
+        $query = $this->selectRaw('title, user_id, left(content, 20) as content, created_at, is_published')
+            ->with('user')
+            ->where('is_deleted', 0)
+            ->where('user_id', $user_id)
+            ->orderBy('created_at', 'desc')
             ->skip($offset)
             ->take($size);
 
