@@ -16,7 +16,7 @@ class CreateTableArticle extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('title');
-            $table->integer('column_id')->unsigned();
+            $table->integer('column_id')->unsigned()->default(0);
             $table->text('content');
             $table->tinyInteger('is_published')->default(0);
             $table->tinyInteger('is_deleted')->default(0);
