@@ -66,24 +66,24 @@ class AdminTest extends TestCase
             'HTTP_Authorization' => 'Bearer{' . $token . '}',
         ];
 
-        $response = $this->call('GET', 'admin/role_list', [], [], [], $header);
+        $response = $this->call('GET', 'admin/role/list', [], [], [], $header);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(3, count($response));
 
-        $response = $this->call('GET', 'admin/permission_list', [], [], [], $header);
+        $response = $this->call('GET', 'admin/permission/list', [], [], [], $header);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(4, count($response));
 
         $data = ['permission_roles' => [1,2]];
-        $response = $this->call('PUT', 'admin/set_permission/' . '1', $data, [], [], $header);
+        $response = $this->call('PUT', 'admin/permission/' . '1', $data, [], [], $header);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(true, $response['result']);
 
         $data = ['role_id' => 2];
-        $response = $this->call('PUT', 'admin/set_role/' . $user->id, $data, [], [], $header);
+        $response = $this->call('PUT', 'admin/role/' . $user->id, $data, [], [], $header);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(true, $response['result']);

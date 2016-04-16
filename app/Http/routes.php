@@ -25,10 +25,8 @@ Route::get('/', function () {
 | kernel and includes session state, CSRF protection, and more.
 |
 */
-Route::get('test', function () {
-    $token = \Request::header('Authorization');
-    #return \Request::header('Authorization') ? $token : 'no';
-    return \Request::header();
+Route::group(['prefix' => 'test', 'middleware' => 'permission'], function () {
+    Route::get('/', function() {});
 });
 
 Route::group(['middleware' => ['web']], function () {
@@ -38,18 +36,31 @@ Route::group(['middleware' => ['web']], function () {
 Route::post('signup', function () {
     return ['signup'];
 });
-Route::get('home/article_list/{page}', 'ArticleController@getArticleList');
-Route::get('article/{article_id}', 'ArticleController@getArticleDetail');
-Route::post('signin', 'AuthController@authenticate');
-Route::group(['middleware' => ['jwt.auth',]], function () {
+
+Route::group(['middleware' => 'permission:read'], function() {
+    Route::post('signin', 'AuthController@authenticate');
+    Route::get('home/article_list/{page}', 'ArticleController@getArticleList');
+    Route::get('article/{article_id}', 'ArticleController@getArticleDetail');
+});
+
+Route::group(['middleware' => ['jwt.auth', 'permission:read']], function () {
     Route::get('profile', 'AuthController@getAuthenticatedUser');
+});
+
+Route::group(['middleware' => ['jwt.auth', 'permission:write']], function () {
     Route::post('article', 'ArticleController@createArticle');
     Route::put('article/{article_id}', 'ArticleController@updateArticle');
     Route::get('article/{article_id}/delete', 'ArticleController@delete');
     Route::get('user/article/{page}', 'ArticleController@getUserArticleList');
+});
 
-    Route::get('admin/role_list', 'AdminController@getRoleList');
-    Route::get('admin/permission_list', 'AdminController@getPermissionList');
-    Route::put('admin/set_role/{user_id}', 'AdminController@setRole');
-    Route::put('admin/set_permission/{role_id}', 'AdminController@setPermission');
+Route::group(['prefix' => 'admin', 'middleware' => ['jwt.auth']], function () {
+    Route::group(['prefix' => 'role', 'middleware' => ['permission:role']], function () {
+        Route::get('list', 'AdminController@getRoleList');
+        Route::put('{user_id}', 'AdminController@setRole');
+    });
+    Route::group(['prefix' => 'permission', 'middleware' => ['permission:permission']], function () {
+        Route::get('list', 'AdminController@getPermissionList');
+        Route::put('{role_id}', 'AdminController@setPermission');
+    });
 });
