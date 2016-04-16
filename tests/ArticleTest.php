@@ -92,27 +92,7 @@ class ArticleTest extends TestCase
         $response = $this->call('GET', 'home/article_list/1');
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
-        $this->assertEquals(0, $response['number']);
-
-        $response = $this->call('GET', 'article/' . $article_id . '/publish');
-        $this->assertEquals(200, $response->status());
-        $response = json_decode($response->content(), true);
-        $this->assertEquals(true, $response['result']);
-
-        $response = $this->call('GET', 'home/article_list/1');
-        $this->assertEquals(200, $response->status());
-        $response = json_decode($response->content(), true);
         $this->assertEquals(1, $response['number']);
-
-        $response = $this->call('GET', 'article/' . $article_id . '/unpublish');
-        $this->assertEquals(200, $response->status());
-        $response = json_decode($response->content(), true);
-        $this->assertEquals(true, $response['result']);
-
-        $response = $this->call('GET', 'home/article_list/1');
-        $this->assertEquals(200, $response->status());
-        $response = json_decode($response->content(), true);
-        $this->assertEquals(0, $response['number']);
 
         $response = $this->call('GET', 'user/article/1');
         $this->assertEquals(200, $response->status());
@@ -122,7 +102,7 @@ class ArticleTest extends TestCase
         $response = $this->call('GET', 'article/' . $article_id);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
-        $this->assertEquals(0, $response['is_published']);
+        $this->assertEquals(1, $response['is_published']);
         $this->assertEquals(0, $response['is_deleted']);
         
         $response = $this->call('GET', 'article/' . $article_id . '/delete');
@@ -133,7 +113,12 @@ class ArticleTest extends TestCase
         $response = $this->call('GET', 'article/' . $article_id);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
-        $this->assertEquals(0, $response['is_published']);
+        $this->assertEquals(1, $response['is_published']);
         $this->assertEquals(1, $response['is_deleted']);
+
+        $response = $this->call('GET', 'home/article_list/1');
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(0, $response['number']);
     }
 }

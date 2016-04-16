@@ -45,8 +45,6 @@ Route::group(['middleware' => ['jwt.auth',]], function () {
     Route::get('profile', 'AuthController@getAuthenticatedUser');
     Route::post('article', 'ArticleController@createArticle');
     Route::put('article/{article_id}', 'ArticleController@updateArticle');
-    Route::get('article/{article_id}/publish', 'ArticleController@publish');
-    Route::get('article/{article_id}/unpublish', 'ArticleController@unpublish');
     Route::get('article/{article_id}/delete', 'ArticleController@delete');
     Route::get('user/article/{page}', 'ArticleController@getUserArticleList');
 });

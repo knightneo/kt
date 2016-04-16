@@ -15,6 +15,8 @@ class Article extends BaseModel
         $this->column_id = $params['column_id'];
         $this->content = $params['content'];
 
+        $this->is_published = 1;
+
         try {
             $this->save();
         } catch (Exception $e) {
