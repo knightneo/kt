@@ -1,8 +1,12 @@
 <?php
 
-class UserTest extends TestCase
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+
+class AdminTest extends TestCase
 {
-    public function testUser()
+    public function testAdmin()
     {
         $roles = [
             ['id' => 1, 'name' => 'reader', 'is_deleted' => 0 ],
@@ -39,29 +43,49 @@ class UserTest extends TestCase
             factory(App\Models\PermissionRole::class)->create($p);
         }
 
-        //test sign in
-        $user = factory(App\Models\User::class)->create([
-            'name' => 'test',
-            'email' => 'test@email.com',
+        $admin = factory(App\Models\User::class)->create([
+            'name' => 'admin',
+            'email' => 'admin@email.com',
             'password' => Hash::make('123456'),
-            'role_id' => 2,
+            'role_id' => 3,
         ]);
-        $data = ['email'=>'test@email.com', 'password' => '123456'];
+
+        $user = factory(App\Models\User::class)->create([
+            'name' => 'user',
+            'email' => 'user@email.com',
+            'password' => Hash::make('123456'),
+            'role_id' => 1,
+        ]);
+
+        $data = ['email'=>'admin@email.com', 'password' => '123456'];
         $response = $this->call('POST', 'signin', $data);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
-        $this->assertArrayHasKey('token', $response);
         $token = $response['token'];
-
-        //test profile
         $header = [
             'HTTP_Authorization' => 'Bearer{' . $token . '}',
         ];
-        $response = $this->call('GET', 'profile', [], [], [], $header, []);
+
+        $response = $this->call('GET', 'admin/role_list', [], [], [], $header);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
-        $this->assertArrayHasKey('user', $response);
-        $this->assertArrayHasKey('role', $response);
-        $this->assertArrayHasKey('permission', $response);
+        $this->assertEquals(3, count($response));
+
+        $response = $this->call('GET', 'admin/permission_list', [], [], [], $header);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(4, count($response));
+
+        $data = ['permission_roles' => [1,2]];
+        $response = $this->call('PUT', 'admin/set_permission/' . '1', $data, [], [], $header);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(true, $response['result']);
+
+        $data = ['role_id' => 2];
+        $response = $this->call('PUT', 'admin/set_role/' . $user->id, $data, [], [], $header);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(true, $response['result']);
     }
 }

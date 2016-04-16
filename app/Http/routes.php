@@ -47,4 +47,9 @@ Route::group(['middleware' => ['jwt.auth',]], function () {
     Route::put('article/{article_id}', 'ArticleController@updateArticle');
     Route::get('article/{article_id}/delete', 'ArticleController@delete');
     Route::get('user/article/{page}', 'ArticleController@getUserArticleList');
+
+    Route::get('admin/role_list', 'AdminController@getRoleList');
+    Route::get('admin/permission_list', 'AdminController@getPermissionList');
+    Route::put('admin/set_role/{user_id}', 'AdminController@setRole');
+    Route::put('admin/set_permission/{role_id}', 'AdminController@setPermission');
 });

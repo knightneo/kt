@@ -4,6 +4,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Article;
+use App\Models\Role;
+use App\Models\Permission;
+use App\Models\PermissionRole;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,13 +22,37 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->delete();
 
         $users = array(
-            ['name' => 'admin', 'email' => 'admin@test.com', 'password' => Hash::make('123456')],
-            ['name' => 'user', 'email' => 'user@test.com', 'password' => Hash::make('123456')],
+            ['name' => 'reader', 'email' => 'reader@test.com', 'password' => Hash::make('123456'), 'role_id' => 1],
+            ['name' => 'writer', 'email' => 'writer@test.com', 'password' => Hash::make('123456'), 'role_id' => 2],
+            ['name' => 'admin', 'email' => 'admin@test.com', 'password' => Hash::make('123456'), 'role_id' => 3],
         );
+
+        $roles = [
+            ['id' => 1, 'name' => 'reader', 'is_deleted' => 0 ],
+            ['id' => 2, 'name' => 'writer', 'is_deleted' => 0 ],
+            ['id' => 3, 'name' => 'admin', 'is_deleted' => 0 ],
+        ];
+
+        $permissions = [
+            ['id' => 1, 'name' => 'read', 'is_deleted' => 0],
+            ['id' => 2, 'name' => 'write', 'is_deleted' => 0],
+            ['id' => 3, 'name' => 'role', 'is_deleted' => 0],
+            ['id' => 4, 'name' => 'permission', 'is_deleted' => 0],
+        ];
+
+        $permission_roles = [
+            ['id' => 1, 'role_id' => 1, 'permission_id' =>1, 'is_deleted' =>0],
+            ['id' => 2, 'role_id' => 2, 'permission_id' =>1, 'is_deleted' =>0],
+            ['id' => 3, 'role_id' => 2, 'permission_id' =>2, 'is_deleted' =>0],
+            ['id' => 4, 'role_id' => 3, 'permission_id' =>1, 'is_deleted' =>0],
+            ['id' => 5, 'role_id' => 3, 'permission_id' =>2, 'is_deleted' =>0],
+            ['id' => 6, 'role_id' => 3, 'permission_id' =>3, 'is_deleted' =>0],
+            ['id' => 7, 'role_id' => 3, 'permission_id' =>4, 'is_deleted' =>0],
+        ];
 
         $article = [
             'title' => "Cameron offshore trust row: PM accused of 'hypocrisy'",
-            'user_id' => 1,
+            'user_id' => 2,
             'column_id' => 0,
             'is_published' => 1,
             'is_deleted' => 0,
@@ -82,6 +109,18 @@ class DatabaseSeeder extends Seeder
 
         foreach ($users as $user) {
             User::create($user);
+        }
+
+        foreach ($roles as $role) {
+            Role::create($role);
+        }
+
+        foreach ($permissions as $permission) {
+            Permission::create($permission);
+        }
+        
+        foreach ($permission_roles as $permission_role) {
+            PermissionRole::create($permission_role);
         }
 
         $i =0;

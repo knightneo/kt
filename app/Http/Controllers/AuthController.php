@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Models\Role;
+use App\Models\PermissionRole;
 
 class AuthController extends Controller
 {
@@ -39,6 +41,26 @@ class AuthController extends Controller
         }
 
         // the token is valid and we have found the user via the sub claim
-        return response()->json(compact('user'));
+        //return response()->json(compact('user'));
+
+        $user = compact('user')['user']->toArray();
+
+        $roleDao = new Role;
+        $role = $roleDao->where('id', $user['role_id'])->first();
+        $role = $role ? $role->toArray() : [];
+        unset($role['is_deleted']);
+        unset($role['created_at']);
+        unset($role['updated_at']);
+
+        $permissionRoleDao = new PermissionRole;
+        $permission_list = $permissionRoleDao->getPermissionByRoleID($user['role_id']);
+
+        $result = [
+            'user' => $user,
+            'role' => $role,
+            'permission' => $permission_list,
+        ];
+
+        return $result;
     }
 }

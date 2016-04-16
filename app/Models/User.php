@@ -27,4 +27,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function setUserRole($user_id, $role_id)
+    {
+        try {
+            $this->where('id', $user_id)
+                ->update(['role_id' => $role_id]);
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
 }
