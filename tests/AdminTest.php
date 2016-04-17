@@ -23,6 +23,7 @@ class AdminTest extends TestCase
             ['id' => 2, 'name' => 'write', 'is_deleted' => 0],
             ['id' => 3, 'name' => 'role', 'is_deleted' => 0],
             ['id' => 4, 'name' => 'permission', 'is_deleted' => 0],
+            ['id' => 5, 'name' => 'user', 'is_deleted' => 0],
         ];
 
         foreach ($permissions as $p) {
@@ -37,6 +38,7 @@ class AdminTest extends TestCase
             ['id' => 5, 'role_id' => 3, 'permission_id' =>2, 'is_deleted' =>0],
             ['id' => 6, 'role_id' => 3, 'permission_id' =>3, 'is_deleted' =>0],
             ['id' => 7, 'role_id' => 3, 'permission_id' =>4, 'is_deleted' =>0],
+            ['id' => 8, 'role_id' => 3, 'permission_id' =>5, 'is_deleted' =>0],
         ];
 
         foreach ($permission_roles as $p) {
@@ -74,7 +76,7 @@ class AdminTest extends TestCase
         $response = $this->call('GET', 'admin/permission/list', [], [], [], $header);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
-        $this->assertEquals(4, count($response));
+        $this->assertEquals(5, count($response));
 
         $data = ['permission_roles' => [1,2]];
         $response = $this->call('PUT', 'admin/permission/' . '1', $data, [], [], $header);
@@ -87,5 +89,16 @@ class AdminTest extends TestCase
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(true, $response['result']);
+
+        $data = ['role_id' => 2];
+        $response = $this->call('PUT', 'admin/role/' . $admin->id, $data, [], [], $header);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(false, $response['result']);
+
+        $response = $this->call('GET', 'admin/user/list/1', [], [], [], $header);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(2, count($response));
     }
 }

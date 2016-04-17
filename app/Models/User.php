@@ -38,4 +38,33 @@ class User extends Authenticatable
         }
         return true;
     }
+
+    public function getUserByPageSize($page, $size = 4)
+    {
+        $offset = ($page -1) * $size;
+
+        $query= $this->select('id', 'name', 'email', 'role_id')
+            ->with('role')
+            ->orderBy('id', 'desc');
+
+        $count = $query->count();
+        $list = $query->skip($offset)->take($size)->get();
+
+        $list = $list ? $list->toArray() : [];
+        foreach ($list as &$item) {
+            $item['role_name'] = $item['role']['name'];
+            unset($item['role']);
+        }
+
+        $result = [];
+        $result['list'] = $list;
+        $result['number'] = ceil($count/$size);
+
+        return $result;
+    }
+
+    public function role()
+    {
+        return $this->belongsTo('App\Models\Role');
+    }
 }

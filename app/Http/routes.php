@@ -63,4 +63,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['jwt.auth']], function () {
         Route::get('list', 'AdminController@getPermissionList');
         Route::put('{role_id}', 'AdminController@setPermission');
     });
+    Route::group(['prefix' => 'user', 'middleware' => ['permission:user|role']], function () {
+        Route::get('list/{page}', 'AdminController@getUserList');
+    });
 });

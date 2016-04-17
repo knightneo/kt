@@ -26,6 +26,9 @@ class AdminController extends Controller
 
     public function setRole($user_id)
     {
+        if (Auth::user()->id == $user_id) {
+            return ['result' => false, 'error_message' => 'cannot set your own role'];
+        }
         $role_id = $this->request['role_id'];
         $userDao = new User;
         $result = $userDao->setUserRole($user_id, $role_id);
@@ -46,6 +49,13 @@ class AdminController extends Controller
             return ['result' => true];
         }
         return ['result' => false];
+    }
+
+    public function getUserList($page)
+    {
+        $userDao = new User;
+        $result = $userDao->getUserByPageSize($page);
+        return $result;
     }
 
 
