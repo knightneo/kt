@@ -65,5 +65,20 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('user', $response);
         $this->assertArrayHasKey('role', $response);
         $this->assertArrayHasKey('permission', $response);
+
+        $params = [
+            'name' => 'test_name',
+            'email' => 'testname@test.com',
+            'password' => 'qwerasdf',
+        ];
+        $response = $this->call('POST', 'signup', $params);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(true, $response['result']);
+
+        $response = $this->call('POST', 'check/email/available', ['email'=>'testname@test.com']);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(false, $response['result']);
     }
 }

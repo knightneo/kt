@@ -3,12 +3,42 @@
 namespace App\Http\Controllers;
 
 use JWTAuth;
+use Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Models\User;
 use App\Models\Role;
 use App\Models\PermissionRole;
 
 class AuthController extends Controller
 {
+    public function isEmailAvailable()
+    {
+        $userDao = new User;
+        if ($userDao->isEmailExist($this->request['email'])) {
+            return ['result' => false];
+        }
+        return ['result' => true];
+    }
+
+    public function createUser()
+    {
+        $params = [];
+        $params['name'] = $this->request['name'];
+        $params['email'] = $this->request['email'];
+        $params['password'] = Hash::make($this->request['password']);
+        $userDao = new User;
+        if ($userDao->isEmailExist($params['email'])) {
+            return [
+                'result' => false,
+                'error_message' => 'this email has already signed up',
+            ];
+        }
+        if ($userDao->createUser($params)) {
+            return ['result' => true];
+        }
+        return ['result' => false];
+    }
+
     public function authenticate()
     {
         // grab credentials from the request

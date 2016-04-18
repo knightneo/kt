@@ -28,6 +28,26 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function isEmailExist($email)
+    {
+        $result = $this->where('email', $email)
+            ->first();
+        return $result ? true : false;
+    }
+
+    public function createUser($params)
+    {
+        $this->name = $params['name'];
+        $this->email = $params['email'];
+        $this->password = $params['password'];
+        try {
+            $this->save();
+        } catch (Exception $e) {
+
+        }
+        return $this->id;
+    }
+
     public function setUserRole($user_id, $role_id)
     {
         try {

@@ -33,12 +33,10 @@ Route::group(['middleware' => ['web']], function () {
     //
 });
 
-Route::post('signup', function () {
-    return ['signup'];
-});
-
 Route::group(['middleware' => 'permission:read'], function() {
+    Route::post('signup', 'AuthController@createUser');
     Route::post('signin', 'AuthController@authenticate');
+    Route::post('check/email/available', 'AuthController@isEmailAvailable');
     Route::get('home/article_list/{page}', 'ArticleController@getArticleList');
     Route::get('article/{article_id}', 'ArticleController@getArticleDetail');
 });
