@@ -20,6 +20,7 @@ class UserTest extends TestCase
             ['id' => 3, 'name' => 'role', 'is_deleted' => 0],
             ['id' => 4, 'name' => 'permission', 'is_deleted' => 0],
             ['id' => 5, 'name' => 'user', 'is_deleted' => 0],
+            ['id' => 6, 'name' => 'password', 'is_deleted' => 0],
         ];
 
         foreach ($permissions as $p) {
@@ -35,6 +36,7 @@ class UserTest extends TestCase
             ['id' => 6, 'role_id' => 3, 'permission_id' =>3, 'is_deleted' =>0],
             ['id' => 7, 'role_id' => 3, 'permission_id' =>4, 'is_deleted' =>0],
             ['id' => 8, 'role_id' => 3, 'permission_id' =>5, 'is_deleted' =>0],
+            ['id' => 9, 'role_id' => 3, 'permission_id' =>6, 'is_deleted' =>0],
         ];
 
         foreach ($permission_roles as $p) {
@@ -65,6 +67,19 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('user', $response);
         $this->assertArrayHasKey('role', $response);
         $this->assertArrayHasKey('permission', $response);
+
+        //reset password
+        $data = ['password' => '654321'];
+        $response = $this->call('POST', 'reset/password', $data, [], [], $header);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertEquals(true, $response['result']);
+
+        $data = ['email'=>'test@email.com', 'password' => '654321'];
+        $response = $this->call('POST', 'signin', $data);
+        $this->assertEquals(200, $response->status());
+        $response = json_decode($response->content(), true);
+        $this->assertArrayHasKey('token', $response);
 
         $params = [
             'name' => 'test_name',

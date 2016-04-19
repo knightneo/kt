@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 3, 'name' => 'role', 'is_deleted' => 0],
             ['id' => 4, 'name' => 'permission', 'is_deleted' => 0],
             ['id' => 5, 'name' => 'user', 'is_deleted' => 0],
+            ['id' => 6, 'name' => 'password', 'is_deleted' => 0],
         ];
 
         $permission_roles = [
@@ -50,6 +51,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 6, 'role_id' => 3, 'permission_id' =>3, 'is_deleted' =>0],
             ['id' => 7, 'role_id' => 3, 'permission_id' =>4, 'is_deleted' =>0],
             ['id' => 8, 'role_id' => 3, 'permission_id' =>5, 'is_deleted' =>0],
+            ['id' => 9, 'role_id' => 3, 'permission_id' =>6, 'is_deleted' =>0],
         ];
 
         $article = [

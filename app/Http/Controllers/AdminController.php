@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Hash;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Permission;
@@ -10,6 +11,13 @@ use App\Models\PermissionRole;
 
 class AdminController extends Controller
 {
+    public function adminResetPassword()
+    {
+        $userDao = new User;
+        $user = $userDao->getUserByEmail($this->request['email']);
+        return ['result' => $userDao->resetPassword($user['id'], Hash::make($this->request['password']))];
+    }
+
     public function getRoleList()
     {
         $roleDao = new Role;

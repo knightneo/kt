@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use JWTAuth;
+use Auth;
 use Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\User;
@@ -11,6 +12,13 @@ use App\Models\PermissionRole;
 
 class AuthController extends Controller
 {
+    public function userResetPassword()
+    {
+        $user = Auth::user();
+        $userDao = new User;
+        return ['result' => $userDao->resetPassword($user->id, Hash::make($this->request['password']))];
+    }
+
     public function isEmailAvailable()
     {
         $userDao = new User;

@@ -43,6 +43,7 @@ Route::group(['middleware' => 'permission:read'], function() {
 
 Route::group(['middleware' => ['jwt.auth', 'permission:read']], function () {
     Route::get('profile', 'AuthController@getAuthenticatedUser');
+    Route::post('reset/password', 'AuthController@userResetPassword');
 });
 
 Route::group(['middleware' => ['jwt.auth', 'permission:write']], function () {
@@ -61,7 +62,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['jwt.auth']], function () {
         Route::get('list', 'AdminController@getPermissionList');
         Route::put('{role_id}', 'AdminController@setPermission');
     });
-    Route::group(['prefix' => 'user', 'middleware' => ['permission:user|role']], function () {
+    Route::group(['prefix' => 'user', 'middleware' => ['permission:user']], function () {
         Route::get('list/{page}', 'AdminController@getUserList');
+    });
+    Route::group(['prefix' => 'user', 'middleware' => ['permission:password']], function () {
+        Route::post('reset/password', 'AdminController@adminResetPassword');
     });
 });

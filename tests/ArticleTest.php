@@ -24,6 +24,7 @@ class ArticleTest extends TestCase
             ['id' => 3, 'name' => 'role', 'is_deleted' => 0],
             ['id' => 4, 'name' => 'permission', 'is_deleted' => 0],
             ['id' => 5, 'name' => 'user', 'is_deleted' => 0],
+            ['id' => 6, 'name' => 'password', 'is_deleted' => 0],
         ];
 
         foreach ($permissions as $p) {
@@ -39,6 +40,7 @@ class ArticleTest extends TestCase
             ['id' => 6, 'role_id' => 3, 'permission_id' =>3, 'is_deleted' =>0],
             ['id' => 7, 'role_id' => 3, 'permission_id' =>4, 'is_deleted' =>0],
             ['id' => 8, 'role_id' => 3, 'permission_id' =>5, 'is_deleted' =>0],
+            ['id' => 9, 'role_id' => 3, 'permission_id' =>6, 'is_deleted' =>0],
         ];
 
         foreach ($permission_roles as $p) {

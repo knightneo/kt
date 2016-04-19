@@ -48,6 +48,24 @@ class User extends Authenticatable
         return $this->id;
     }
 
+    public function getUserByEmail($email)
+    {
+        $user = $this->where('email', $email)
+            ->first();
+        return $user ? $user->toArray() : [];
+    }
+
+    public function resetPassword($user_id, $password)
+    {
+        try {
+            $this->where('id', $user_id)
+                ->update(['password' => $password]);
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
+
     public function setUserRole($user_id, $role_id)
     {
         try {
