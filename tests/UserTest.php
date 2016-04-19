@@ -69,7 +69,9 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('permission', $response);
 
         //reset password
-        $data = ['password' => '654321'];
+        $data = [
+            'password' => '654321',
+        ];
         $response = $this->call('POST', 'reset/password', $data, [], [], $header);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);

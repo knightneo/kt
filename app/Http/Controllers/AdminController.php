@@ -15,7 +15,10 @@ class AdminController extends Controller
     {
         $userDao = new User;
         $user = $userDao->getUserByEmail($this->request['email']);
-        return ['result' => $userDao->resetPassword($user['id'], Hash::make($this->request['password']))];
+        if ($user) {
+            return ['result' => $userDao->resetPassword($user['id'], Hash::make($this->request['password']))];
+        }
+        return ['result' => false];
     }
 
     public function getRoleList()
