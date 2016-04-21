@@ -2,19 +2,31 @@
 
 namespace App\Http\Controllers;
 
-#use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
-#use Illuminate\Foundation\Validation\ValidatesRequests;
-#use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Redis;
+use App\Libraries\KT\RedisKey;
 
-class Controller extends BaseController
+class Controller extends BaseController implements RedisKey
 {
-    #use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     protected $request = '';
 
     public function __construct(Request $request)
     {
         $this->request = $request;
+        $redis = Redis::connection();
+    }
+
+    public function setRedis($key, $value, $time = 60)
+    {
+        $value = json_encode($value);
+        Redis::set($key, $value);
+        Redis::expire($key, $time);
+    }
+
+    public function getRedis($key)
+    {
+        $data = Redis::get($key);
+        return $data ? json_decode($data, true) : [];
     }
 }

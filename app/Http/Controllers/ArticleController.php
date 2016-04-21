@@ -7,7 +7,6 @@ use App\Models\Article;
 
 class ArticleController extends Controller
 {
-    
 
     public function createArticle()
     {
@@ -49,8 +48,13 @@ class ArticleController extends Controller
 
     public function getArticleList($page)
     {
+        $list = $this->getRedis($this::KEY_HOME_ARTICLE_LIST . $page);
+        if ($list) {
+            return $list;
+        }
         $articleDao = new Article;
         $list = $articleDao->getArticleByPageSize($page);
+        $this->setRedis($this::KEY_HOME_ARTICLE_LIST . $page, $list);
         return $list;
     }
 
@@ -64,8 +68,13 @@ class ArticleController extends Controller
 
     public function getArticleDetail($article_id)
     {
+        $article = $this->getRedis($this::KEY_ARTICLE_DETAIL . $article_id);
+        if ($article) {
+            return $article;
+        }
         $articleDao = new Article;
         $article = $articleDao->getArticleDetail($article_id);
+        $this->setRedis($this::KEY_ARTICLE_DETAIL . $article_id, $article);
         return $article;
     }
 
