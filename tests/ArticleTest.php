@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Libraries\KT\RedisKey;
+use Redis;
 
 class ArticleTest extends TestCase
 {
@@ -129,6 +131,8 @@ class ArticleTest extends TestCase
         $this->assertArrayHasKey('result', $response);
         $this->assertEquals(true, $response['result']);
 
+        Redis::del(RedisKey::KEY_HOME_ARTICLE_LIST . 1);
+
         $response = $this->call('GET', 'home/article_list/1');
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
@@ -138,6 +142,8 @@ class ArticleTest extends TestCase
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(1, $response['number']);
+
+        Redis::del(RedisKey::KEY_ARTICLE_DETAIL . 1);
 
         $response = $this->call('GET', 'article/' . $article_id);
         $this->assertEquals(200, $response->status());
@@ -150,15 +156,22 @@ class ArticleTest extends TestCase
         $response = json_decode($response->content(), true);
         $this->assertEquals(true, $response['result']);
 
+        Redis::del(RedisKey::KEY_ARTICLE_DETAIL . 1);
+
         $response = $this->call('GET', 'article/' . $article_id);
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(1, $response['is_published']);
         $this->assertEquals(1, $response['is_deleted']);
 
+        Redis::del(RedisKey::KEY_HOME_ARTICLE_LIST . 1);
+
         $response = $this->call('GET', 'home/article_list/1');
         $this->assertEquals(200, $response->status());
         $response = json_decode($response->content(), true);
         $this->assertEquals(0, $response['number']);
+
+        Redis::del(RedisKey::KEY_HOME_ARTICLE_LIST . 1);
+        Redis::del(RedisKey::KEY_ARTICLE_DETAIL . 1);
     }
 }
